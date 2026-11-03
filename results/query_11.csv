@@ -1,0 +1,55 @@
+agency,status,closure_timestamp_state,request_count
+NYPD,Closed,Has closed_date,1717442
+HPD,Closed,Has closed_date,771414
+DSNY,Closed,Has closed_date,323598
+DOT,Closed,Has closed_date,205565
+DEP,Closed,Has closed_date,194672
+DOB,Closed,Has closed_date,101022
+DPR,Closed,Has closed_date,95547
+DOHMH,Closed,Has closed_date,79784
+DHS,Closed,Has closed_date,45442
+TLC,Closed,Has closed_date,30136
+DCWP,Closed,Has closed_date,18265
+DPR,In Progress,Missing closed_date,15300
+EDC,Closed,Has closed_date,11120
+EDC,In Progress,Missing closed_date,9434
+TLC,In Progress,Missing closed_date,6086
+DHS,Closed,Missing closed_date,5990
+DOHMH,In Progress,Missing closed_date,3574
+DOT,Pending,Missing closed_date,3475
+HPD,Open,Missing closed_date,3115
+DSNY,In Progress,Missing closed_date,2885
+DOE,Closed,Has closed_date,1737
+DOT,Assigned,Missing closed_date,1494
+DOB,Open,Has closed_date,1213
+DEP,Open,Missing closed_date,1157
+OOS,Closed,Has closed_date,1111
+DEP,Started,Missing closed_date,1085
+DOB,Assigned,Has closed_date,833
+DOT,Pending,Has closed_date,833
+DOT,Assigned,Has closed_date,670
+DSNY,Open,Missing closed_date,254
+OTI,Closed,Has closed_date,204
+DEP,Assigned,Missing closed_date,186
+NYPD,Unspecified,Has closed_date,152
+DOT,In Progress,Missing closed_date,41
+DOHMH,Assigned,Has closed_date,35
+DSNY,Closed,Missing closed_date,34
+DOT,Open,Missing closed_date,23
+DEP,Started,Has closed_date,21
+DEP,In Progress,Has closed_date,15
+DHS,Assigned,Has closed_date,14
+DCWP,In Progress,Missing closed_date,13
+OTI,In Progress,Missing closed_date,10
+DPR,Unspecified,Has closed_date,7
+DEP,Pending,Has closed_date,6
+DSNY,Pending,Has closed_date,6
+HPD,Open,Has closed_date,6
+DHS,In Progress,Missing closed_date,3
+DOHMH,Unspecified,Missing closed_date,3
+TLC,Unspecified,Missing closed_date,3
+DOT,Unspecified,Missing closed_date,2
+DSNY,Unspecified,Missing closed_date,2
+DEP,Assigned,Has closed_date,1
+DPR,Unspecified,Missing closed_date,1
+DSNY,Unspecified,Has closed_date,1

@@ -1,0 +1,8 @@
+created_weekday,weekday_name,eligible_requests,pct_not_closed_within_72h
+0.0,Monday,546018,25.93
+1.0,Tuesday,544190,26.39
+2.0,Wednesday,534940,27.43
+3.0,Thursday,524916,29.21
+4.0,Friday,531433,29.09
+5.0,Saturday,483473,19.39
+6.0,Sunday,483132,16.26

@@ -1,0 +1,26 @@
+agency,complaint_type,eligible_requests,slow_72h_requests,pct_not_closed_within_72h,avg_hours_among_closed_valid_requests
+EDC,Noise - Helicopter,20554,20554.0,100.0,7320.5
+DOHMH,Construction Lead Dust,1332,1332.0,100.0,
+TLC,Taxi Report,808,808.0,100.0,5518.9
+TLC,Taxi Complaint,9593,9583.0,99.9,3524.3
+DOHMH,Mobile Food Vendor,4908,4902.0,99.88,1427.5
+TLC,For Hire Vehicle Complaint,18258,18222.0,99.8,2835.2
+DOHMH,Non-Residential Heat,1172,1169.0,99.74,1379.8
+OOS,Cannabis Retailer,1111,1108.0,99.73,973.2
+DOHMH,Food Establishment,12934,12881.0,99.59,1358.2
+DOHMH,Smoking or Vaping,6274,6194.0,98.72,1210.6
+DPR,Root/Sewer/Sidewalk Condition,10446,10180.0,97.45,2835.5
+DOT,Curb Condition,8070,7819.0,96.89,538.1
+DOHMH,Indoor Sewage,511,483.0,94.52,489.5
+DOHMH,Harboring Bees/Wasps,548,507.0,92.52,22.5
+HPD,OUTSIDE BUILDING,911,825.0,90.56,794.1
+HPD,ELEVATOR,1642,1486.0,90.5,775.3
+HPD,APPLIANCE,22500,19830.0,88.13,747.8
+HPD,DOOR/WINDOW,45463,39395.0,86.65,666.4
+DSNY,Lot Condition,1540,1328.0,86.23,770.4
+HPD,UNSANITARY CONDITION,117749,101408.0,86.12,590.7
+DOB,Building/Use,20758,17783.0,85.67,2991.0
+HPD,GENERAL,33187,28409.0,85.6,728.4
+DPR,Dead/Dying Tree,10473,8961.0,85.56,1811.1
+DSNY,Highway Condition,864,738.0,85.42,953.8
+DOB,Special Projects Inspection Team (SPIT),3938,3352.0,85.12,2007.4

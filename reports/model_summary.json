@@ -1,0 +1,86 @@
+{
+  "target": "Not closed within 72 hours of creation",
+  "target_column": "slow_72h",
+  "target_definition": "1 = closure timestamp is more than 72 hours after creation, or no closure timestamp exists and status is not Closed; 0 = closed within 72 hours; NULL outcomes are excluded.",
+  "interpretation_note": "Operational outcome from the downloaded 2025 cohort; not an official NYC SLA breach and not a live real-time prediction.",
+  "known_outcome_rows": 3648102,
+  "excluded_unknown_outcome_rows": 6940,
+  "train_rows": 2491006,
+  "validation_rows": 582219,
+  "test_rows": 574877,
+  "train_end_exclusive": "2025-09-13",
+  "validation_end_exclusive": "2025-11-07",
+  "test_start": "2025-11-07",
+  "train_slow_rate": 0.2539472004483329,
+  "validation_slow_rate": 0.24343588924442522,
+  "test_slow_rate": 0.23977998771911208,
+  "features": [
+    "complaint_type",
+    "borough",
+    "agency",
+    "created_hour",
+    "created_weekday"
+  ],
+  "thresholds_selected_on_validation": {
+    "majority_class_baseline": 0.5,
+    "complaint_type_rate_baseline": 0.4099999999999999,
+    "lightgbm": 0.6699999999999999
+  },
+  "test_metrics": [
+    {
+      "model": "Majority-class baseline",
+      "threshold_selected_on_validation": 0.5,
+      "roc_auc": 0.5,
+      "average_precision": 0.23977998771911208,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.7602200122808879
+    },
+    {
+      "model": "Complaint-type-rate baseline",
+      "threshold_selected_on_validation": 0.41,
+      "roc_auc": 0.9411467333666087,
+      "average_precision": 0.8248923651012416,
+      "precision": 0.7651868271494963,
+      "recall": 0.8038724935434259,
+      "f1": 0.7840527565211546,
+      "accuracy": 0.893822504640123
+    },
+    {
+      "model": "LightGBM",
+      "threshold_selected_on_validation": 0.67,
+      "roc_auc": 0.9490967853072318,
+      "average_precision": 0.8510946313119359,
+      "precision": 0.7765823969388391,
+      "recall": 0.8127230782623835,
+      "f1": 0.7942418194772831,
+      "accuracy": 0.899030575236094
+    }
+  ],
+  "agency_ablation": {
+    "comparison_file": "results/agency_ablation_metrics.csv",
+    "full_model": {
+      "model": "LightGBM",
+      "threshold_selected_on_validation": 0.67,
+      "roc_auc": 0.9490967853072318,
+      "average_precision": 0.8510946313119359,
+      "precision": 0.7765823969388391,
+      "recall": 0.8127230782623835,
+      "f1": 0.7942418194772831,
+      "accuracy": 0.899030575236094
+    },
+    "without_agency": {
+      "model": "LightGBM without agency",
+      "threshold_selected_on_validation": 0.64,
+      "roc_auc": 0.9476470761977366,
+      "average_precision": 0.8493610294629896,
+      "precision": 0.7649409652136931,
+      "recall": 0.8220379559502046,
+      "f1": 0.7924623308867497,
+      "accuracy": 0.8967587849226878
+    },
+    "interpretation": "Both models use identical chronological train/validation/test dates. The without-agency model excludes only the agency feature."
+  },
+  "permutation_importance_sample_rows": 50000
+}

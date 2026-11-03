@@ -1,0 +1,2 @@
+total_requests,distinct_request_ids,requests_with_closed_date,requests_without_closed_date,status_closed_missing_close_timestamp,pct_with_due_date,invalid_created_dates,invalid_closure_chronology,known_72h_outcomes,slow_72h_requests
+3655042,3655042,3600872,54170,6024,0.45,0,916,3648102,912161.0

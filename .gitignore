@@ -1,0 +1,13 @@
+.venv/
+env/
+__pycache__/
+*.pyc
+data/*.csv
+data/*.db
+data/days/
+models/*.joblib
+.DS_Store
+
+*.zip
+
+results - Copy/
