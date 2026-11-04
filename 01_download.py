@@ -15,9 +15,11 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
+import hashlib
 import os
 import time
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -68,6 +70,32 @@ def request_with_retries(session: requests.Session, params: dict, day: date) -> 
             print(f"{day}: request failed; retrying in {wait}s ({exc})")
             time.sleep(wait)
     raise RuntimeError(f"{day}: unexpected retry exit")
+
+
+def source_day_count(session: requests.Session, day: date, next_day: date) -> int:
+    """Return the source-side row count for one creation-date partition."""
+    where = (
+        f"created_date >= '{day.isoformat()}T00:00:00' "
+        f"AND created_date < '{next_day.isoformat()}T00:00:00'"
+    )
+    content = request_with_retries(
+        session, {"$select": "count(*)", "$where": where}, day
+    )
+    try:
+        count_frame = pd.read_csv(io.BytesIO(content))
+        if count_frame.empty or count_frame.shape[1] < 1:
+            raise ValueError("empty count response")
+        return int(count_frame.iloc[0, 0])
+    except Exception as exc:
+        raise RuntimeError(f"{day}: could not parse source count response: {exc}") from exc
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def validate_day_file(path: Path, day: date) -> tuple[bool, str]:
@@ -185,6 +213,8 @@ def main():
     total_days = (end - start).days
     completed_rows = 0
     day_number = 0
+    run_started_at = datetime.now(timezone.utc).isoformat()
+    day_manifest = []
 
     while day < end:
         day_number += 1
@@ -194,17 +224,39 @@ def main():
         if path.exists() and not args.refresh_existing:
             valid, message = validate_day_file(path, day)
             if valid:
-                print(f"[{day_number}/{total_days}] {day}: existing file OK ({message})")
-                completed_rows += int(message.split()[0].replace(",", ""))
-                day = next_day
-                continue
+                cached_count = int(message.split()[0].replace(",", ""))
+                expected_count = source_day_count(session, day, next_day)
+                if cached_count != expected_count:
+                    print(
+                        f"[{day_number}/{total_days}] {day}: cached count "
+                        f"{cached_count:,} differs from source count {expected_count:,}; "
+                        "redownloading"
+                    )
+                    path.unlink()
+                else:
+                    print(f"[{day_number}/{total_days}] {day}: existing file OK; "
+                          f"{cached_count:,} rows match source count")
+                    completed_rows += cached_count
+                    day_manifest.append({"date": day.isoformat(), "rows": cached_count,
+                                         "origin": "existing_file_source_count_verified"})
+                    day = next_day
+                    continue
             print(f"[{day_number}/{total_days}] {day}: existing file invalid ({message}); redownloading")
             path.unlink()
 
         print(f"[{day_number}/{total_days}] Downloading {day}...")
         count = download_day(session, day, next_day, columns, path)
+        expected_count = source_day_count(session, day, next_day)
+        if count != expected_count:
+            path.unlink(missing_ok=True)
+            raise RuntimeError(
+                f"{day}: downloaded {count:,} rows but NYC Open Data count(*) "
+                f"reports {expected_count:,}. Daily file discarded. Retry the run."
+            )
         completed_rows += count
-        print(f"  saved {count:,} rows -> {path}")
+        day_manifest.append({"date": day.isoformat(), "rows": count,
+                             "origin": "downloaded_and_source_count_verified"})
+        print(f"  saved {count:,} rows (source count verified) -> {path}")
         day = next_day
 
     # Confirm all expected daily files exist and are valid before combining.
@@ -239,8 +291,32 @@ def main():
     print(f"Total rows: {total_rows:,}")
     print(f"Unique request IDs: {combined['unique_key'].nunique():,}")
     print(f"Output: {output.resolve()}")
+    created = pd.to_datetime(combined["created_date"], errors="coerce")
+    completed_at = datetime.now(timezone.utc).isoformat()
+    manifest = {
+        "dataset": "NYC Open Data 311 Service Requests (erm2-nwe9)",
+        "requested_start_date_inclusive": start.isoformat(),
+        "requested_end_date_exclusive": end.isoformat(),
+        "run_started_at_utc": run_started_at,
+        "run_completed_at_utc": completed_at,
+        "note": (
+            "Run timestamps document when this combined extract was assembled/verified; "
+            "they do not reconstruct the original download time of pre-existing cached files."
+        ),
+        "daily_files": day_manifest,
+        "days_checked": total_days,
+        "total_rows": int(len(combined)),
+        "distinct_request_ids": int(combined["unique_key"].nunique()),
+        "created_date_min": None if created.dropna().empty else str(created.min()),
+        "created_date_max": None if created.dropna().empty else str(created.max()),
+        "combined_csv": str(output),
+        "combined_csv_sha256": sha256_file(output),
+    }
+    manifest_path = Path("reports/data_manifest.json")
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    print(f"Manifest: {manifest_path.resolve()}")
     if not combined.empty:
-        created = pd.to_datetime(combined["created_date"], errors="coerce")
         print(f"Actual created_date range: {created.min()} to {created.max()}")
 
 

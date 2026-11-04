@@ -26,8 +26,10 @@ def metrics_for_group(name, group_name, part, scores, threshold):
         "rows": int(len(part)),
         "actual_slow_rate": float(y.mean()),
         "predicted_slow_rate": float(pred.mean()),
+        # Both ranking metrics require positive and negative examples to be
+        # interpretable for subgroup comparisons. Mark single-class groups NA.
         "roc_auc": float(roc_auc_score(y, scores)) if len(np.unique(y)) == 2 else np.nan,
-        "average_precision": float(average_precision_score(y, scores)),
+        "average_precision": float(average_precision_score(y, scores)) if len(np.unique(y)) == 2 else np.nan,
         "precision": float(precision_score(y, pred, zero_division=0)),
         "recall": float(recall_score(y, pred, zero_division=0)),
         "f1": float(f1_score(y, pred, zero_division=0)),
